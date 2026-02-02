@@ -2,419 +2,271 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Africa Honeymoon</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Our Honeymoon Through Eastern & Southern Africa</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+  body{font-family:'Nunito',sans-serif;background:#f7f3ee;color:#3a3530;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: #f7f3ee;
-    color: #3a3530;
-    overflow-x: hidden;
-  }
+  .hdr{text-align:center;padding:22px 16px 18px;background:linear-gradient(135deg,#4a6650,#5c7a5e 50%,#6d8c6f);color:#f7f3ee;position:relative}
+  .hdr h1{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;letter-spacing:.01em}
+  .hdr p{font-size:.82rem;opacity:.8;margin-top:3px;line-height:1.4}
+  .hdr .hint{font-size:.72rem;opacity:.6;margin-top:6px;font-style:italic}
 
-  .page-header {
-    text-align: center;
-    padding: 28px 20px 22px;
-    background: linear-gradient(135deg, #4a6650 0%, #5c7a5e 50%, #6d8c6f 100%);
-    color: #f7f3ee;
-    position: relative;
-    overflow: hidden;
-  }
-  .page-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2l2 3-2 3zm0-7V11H0V9h20V7l2 3-2 3z'/%3E%3C/g%3E%3C/svg%3E");
-  }
-  .page-header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    position: relative;
-  }
-  .page-header p {
-    font-size: 0.88rem;
-    opacity: 0.82;
-    margin-top: 4px;
-    position: relative;
-    font-weight: 400;
-  }
+  .tabs{display:flex;overflow-x:auto;background:#fff;border-bottom:1px solid #e0dbd4;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:11px 16px;cursor:pointer;border:none;background:0 0;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:#7a7168;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+  .tab:hover{color:#3a3530;background:#faf8f5}
+  .tab.on{border-bottom-color:var(--c);background:#f5f2ec;color:#3a3530}
+  .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .tab-sub{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:#a89e92;font-weight:600;margin-top:1px}
 
-  .country-bar {
-    display: flex;
-    overflow-x: auto;
-    background: #fff;
-    border-bottom: 1px solid #e0dbd4;
-    scrollbar-width: thin;
-    scrollbar-color: #c4b9a8 transparent;
+  .map-wrap{position:relative;width:100%;height:60vh;min-height:340px;max-height:600px}
+  #map{width:100%;height:100%}
+
+  /* Detail panel */
+  .dp{position:absolute;top:8px;right:8px;width:280px;max-height:calc(100% - 16px);background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:1000;overflow:hidden;transform:translateX(300px);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+  .dp.open{transform:translateX(0)}
+  .dp-hd{padding:14px 16px 12px;color:#fff;position:relative}
+  .dp-days{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;opacity:.85;font-weight:700}
+  .dp-name{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;line-height:1.2;margin-top:1px}
+  .dp-x{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:none;color:#fff;width:24px;height:24px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .dp-x:hover{background:rgba(255,255,255,.35)}
+  .dp-body{padding:0;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+  .dp-stop{padding:12px 16px;border-bottom:1px solid #f0ede7;cursor:pointer;transition:background .15s}
+  .dp-stop:hover{background:#faf8f5}
+  .dp-stop:last-child{border-bottom:none}
+  .dp-sn{font-weight:700;font-size:.82rem;color:#3a3530;display:flex;align-items:center;gap:7px}
+  .pn{width:18px;height:18px;border-radius:50%;color:#fff;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .dp-date{font-size:.68rem;color:#a89e92;padding-left:25px;margin-top:1px}
+  .dp-desc{font-size:.78rem;color:#6b635a;line-height:1.5;padding-left:25px;margin-top:4px}
+
+  /* Popups */
+  .leaflet-popup-content-wrapper{border-radius:10px!important;box-shadow:0 4px 18px rgba(0,0,0,.16)!important;padding:0!important;overflow:hidden}
+  .leaflet-popup-content{margin:0!important;min-width:180px}
+  .leaflet-popup-tip{box-shadow:0 2px 8px rgba(0,0,0,.1)!important}
+  .pp{font-family:'Nunito',sans-serif}
+  .pp-hd{padding:10px 14px 8px;color:#fff}
+  .pp-nm{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600}
+  .pp-sub{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;opacity:.8;margin-top:1px}
+  .pp-dt{font-size:.7rem;color:#8a8279;padding:6px 14px 2px;background:#fff;font-weight:600}
+  .pp-ds{padding:4px 14px 12px;font-size:.78rem;color:#4a453f;line-height:1.45;background:#fff}
+
+  /* Markers */
+  .mk{width:26px;height:26px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:#fff;font-family:'Nunito',sans-serif}
+  .mk span{transform:rotate(45deg);display:block}
+
+  /* Legend */
+  .leg{position:absolute;bottom:24px;left:8px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border-radius:8px;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:1000;font-size:.68rem}
+  .leg-t{font-weight:700;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:#7a7168;margin-bottom:4px}
+  .leg-i{display:flex;align-items:center;gap:6px;padding:1.5px 0;color:#4a453f;cursor:pointer}
+  .leg-i:hover{opacity:.7}
+  .leg-d{width:8px;height:8px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.8);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+  /* Map toggle */
+  .map-tog{position:absolute;bottom:24px;right:8px;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border:none;border-radius:8px;padding:7px 11px;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:700;color:#4a453f;display:flex;align-items:center;gap:5px;transition:background .15s}
+  .map-tog:hover{background:#fff}
+  .map-tog svg{width:14px;height:14px}
+
+  .foot{text-align:center;padding:16px;font-size:.75rem;color:#8a8279;background:#f7f3ee;line-height:1.5}
+  .foot span{color:#c06850}
+
+  /* ── Mobile ── */
+  @media(max-width:640px){
+    .hdr h1{font-size:1.35rem}
+    .hdr p{font-size:.78rem}
+    .map-wrap{height:55vh;min-height:300px}
+    .dp{width:calc(100% - 16px);right:8px;left:8px;max-height:50vh;bottom:8px;top:auto;transform:translateY(110%)}
+    .dp.open{transform:translateY(0)}
+    .tab{padding:10px 13px;font-size:.74rem;gap:6px}
+    .leg{display:none}
+    .leaflet-popup-content{min-width:160px}
   }
-  .country-bar::-webkit-scrollbar { height: 4px; }
-  .country-bar::-webkit-scrollbar-thumb { background: #c4b9a8; border-radius: 2px; }
-
-  .country-tab {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #7a7168;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
-  .country-tab:hover { color: #3a3530; background: #faf8f5; }
-  .country-tab.active { border-bottom-color: var(--tab-color); background: #f5f2ec; color: #3a3530; }
-
-  .tab-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .tab-days {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #a89e92;
-    font-weight: 600;
-  }
-
-  #map { width: 100%; height: 540px; }
-
-  .detail-panel {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 300px;
-    max-height: calc(100% - 20px);
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 28px rgba(0,0,0,0.15);
-    z-index: 1000;
-    overflow: hidden;
-    transform: translateX(320px);
-    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-    display: flex;
-    flex-direction: column;
-  }
-  .detail-panel.open { transform: translateX(0); }
-
-  .detail-header { padding: 18px 20px 14px; color: #fff; position: relative; }
-  .detail-header .detail-days { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.85; font-weight: 700; }
-  .detail-header .detail-country { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; line-height: 1.2; margin-top: 2px; }
-  .detail-close {
-    position: absolute; top: 12px; right: 14px;
-    background: rgba(255,255,255,0.2); border: none; color: #fff;
-    width: 26px; height: 26px; border-radius: 50%;
-    font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .detail-close:hover { background: rgba(255,255,255,0.35); }
-
-  .detail-body { padding: 0; overflow-y: auto; flex: 1; }
-
-  .detail-stop { padding: 14px 20px; border-bottom: 1px solid #f0ede7; cursor: pointer; transition: background 0.15s; }
-  .detail-stop:hover { background: #faf8f5; }
-  .detail-stop:last-child { border-bottom: none; }
-
-  .detail-stop-name { font-weight: 700; font-size: 0.88rem; color: #3a3530; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-  .pin-num {
-    width: 20px; height: 20px; border-radius: 50%;
-    color: #fff; font-size: 0.65rem; font-weight: 800;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .detail-stop-desc { font-size: 0.8rem; color: #6b635a; line-height: 1.55; padding-left: 28px; }
-
-  .leaflet-popup-content-wrapper {
-    border-radius: 10px !important;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.16) !important;
-    padding: 0 !important;
-    overflow: hidden;
-  }
-  .leaflet-popup-content { margin: 0 !important; min-width: 200px; }
-
-  .popup-inner { font-family: 'Nunito', sans-serif; }
-  .popup-head { padding: 12px 16px 10px; color: #fff; }
-  .popup-head .popup-name { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 600; }
-  .popup-head .popup-country { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; margin-top: 1px; }
-  .popup-desc { padding: 10px 16px 14px; font-size: 0.8rem; color: #4a453f; line-height: 1.5; background: #fff; }
-
-  .marker-pin {
-    width: 28px; height: 28px;
-    border-radius: 50% 50% 50% 4px;
-    transform: rotate(-45deg);
-    border: 2.5px solid #fff;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 11px; color: #fff;
-    font-family: 'Nunito', sans-serif;
-  }
-  .marker-pin span { transform: rotate(45deg); display: block; }
-
-  .embed-section {
-    text-align: center; padding: 24px 20px;
-    background: #fff; border-top: 1px solid #e0dbd4;
-  }
-  .embed-section h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
-  .embed-section p { font-size: 0.8rem; color: #7a7168; margin-bottom: 12px; max-width: 480px; margin-inline: auto; line-height: 1.5; }
-  .embed-wrap { position: relative; max-width: 600px; margin: 0 auto; }
-  .embed-code {
-    width: 100%; background: #2c2926; color: #d4cfc7;
-    border: 1px solid #3a3530; border-radius: 8px;
-    padding: 12px 54px 12px 14px;
-    font-family: 'Courier New', monospace; font-size: 0.75rem;
-    resize: none; white-space: pre; overflow-x: auto; height: 48px;
-  }
-  .copy-btn {
-    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
-    background: #5c7a5e; color: #fff; border: none; border-radius: 5px;
-    padding: 5px 12px; font-family: 'Nunito', sans-serif;
-    font-size: 0.72rem; font-weight: 700; cursor: pointer;
-  }
-  .copy-btn:hover { background: #4a6650; }
-  .copy-btn.copied { background: #8a6e3e; }
-
-  .footer-note { text-align: center; padding: 18px; font-size: 0.75rem; color: #a89e92; }
-  .footer-note span { color: #c06850; }
-
-  .map-legend {
-    position: absolute; bottom: 28px; left: 10px;
-    background: rgba(255,255,255,0.95); backdrop-filter: blur(6px);
-    border-radius: 8px; padding: 10px 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-    z-index: 1000; font-size: 0.72rem;
-  }
-  .legend-title { font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: #7a7168; margin-bottom: 6px; }
-  .legend-item { display: flex; align-items: center; gap: 7px; padding: 2px 0; color: #4a453f; cursor: pointer; }
-  .legend-item:hover { opacity: 0.7; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.8); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-
-  @media (max-width: 640px) {
-    .page-header h1 { font-size: 1.5rem; }
-    #map { height: 440px; }
-    .detail-panel { width: calc(100% - 20px); }
-    .country-tab { padding: 10px 14px; font-size: 0.78rem; }
-    .map-legend { display: none; }
+  @media(max-width:380px){
+    .hdr{padding:18px 14px 14px}
+    .hdr h1{font-size:1.05rem}
+    .tab{padding:9px 11px;font-size:.7rem}
   }
 </style>
 </head>
 <body>
 
-<div class="page-header">
-  <h1>Our Africa Honeymoon ✈︎</h1>
-  <p>26 days · 6 countries · 14 stops · then home to Tampa!</p>
+<div class="hdr">
+  <h1>Our Honeymoon Through Eastern & Southern Africa ✈︎</h1>
+  <p>July 21 – Aug 16, 2025 · 27 days · 5 countries</p>
+  <div class="hint">Tap the pins to see what we're up to at each stop!</div>
 </div>
 
-<div class="country-bar" id="country-bar"></div>
+<div class="tabs" id="tabs"></div>
 
-<div style="position:relative;">
+<div class="map-wrap">
   <div id="map"></div>
-  <div class="detail-panel" id="detail-panel">
-    <div class="detail-header" id="detail-header">
-      <button class="detail-close" id="detail-close" aria-label="Close">✕</button>
-      <div class="detail-days" id="detail-days"></div>
-      <div class="detail-country" id="detail-country"></div>
+  <div class="dp" id="dp">
+    <div class="dp-hd" id="dp-hd">
+      <button class="dp-x" id="dp-x" aria-label="Close">✕</button>
+      <div class="dp-days" id="dp-days"></div>
+      <div class="dp-name" id="dp-name"></div>
     </div>
-    <div class="detail-body" id="detail-body"></div>
+    <div class="dp-body" id="dp-body"></div>
   </div>
-  <div class="map-legend" id="map-legend"></div>
+  <div class="leg" id="leg"></div>
+  <button class="map-tog" id="map-tog" aria-label="Toggle satellite view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span>Satellite</span></button>
 </div>
-
-<div class="embed-section">
-  <h3>Embed This Map</h3>
-  <p>Host this file (GitHub Pages, Netlify, etc.) and paste the embed code into your wedding site.</p>
-  <div class="embed-wrap">
-    <textarea class="embed-code" id="embed-code" readonly>&lt;iframe src="YOUR_URL/africa-honeymoon-map.html" width="100%" height="700" style="border:none;border-radius:8px" loading="lazy"&gt;&lt;/iframe&gt;</textarea>
-    <button class="copy-btn" id="copy-btn" onclick="copyEmbed()">COPY</button>
-  </div>
-</div>
-
-<div class="footer-note">Once we arrive back home, we make the final move to Tampa! <span>♥</span></div>
 
 <script>
-const countries = [
+const C=[
   {
-    id: 'rwanda', name: 'Rwanda', days: 'Days 1–5', color: '#4285F4',
-    stops: [
-      { name: 'Kigali', lat: -1.9440, lng: 30.0619, desc: 'Arrive in the capital city. Visit the Kigali Genocide Memorial to learn about Rwanda\'s history and resilience.' },
-      { name: 'Umusambi Village', lat: -1.9844, lng: 30.2100, desc: 'A conservation centre dedicated to protecting Grey Crowned Cranes and supporting local communities.' },
-      { name: 'Volcanoes National Park', lat: -1.4322, lng: 29.5339, desc: 'Hike through bamboo forests in this stunning national park — home to mountain gorillas and golden monkeys! Trek to see the golden monkeys!' },
-      { name: 'Dian Fossey Grave', lat: -1.4733, lng: 29.4846, desc: 'Trek to the Karisoke Research Camp to visit the grave site of legendary primatologist Dian Fossey.' }
+    id:'rwanda',name:'Rwanda',days:'Jul 21–28',color:'#4285F4',
+    stops:[
+      {name:'Kigali',lat:-1.9440,lng:30.0619,dates:'Jul 21–22',desc:'Board overnight flight from Boston on Jul 21, land in Kigali the 22nd. Settle in and explore the city. We pass back through on the 28th for one more night before flying south.'},
+      {name:'Umusambi Village',lat:-1.9844,lng:30.2100,dates:'Jul 23',desc:'Morning at the Rwanda Wildlife Conservation Association to see the Grey Crowned Cranes, then back to Kigali for the Genocide Memorial in the afternoon.'},
+      {name:'Volcanoes National Park',lat:-1.4322,lng:29.5339,dates:'Jul 24–25',desc:'Early drive up to Musanze on the 24th. Morning hike into the forest to Dian Fossey\'s field camp and grave site. Golden monkey trek on the 25th, plus the Fossey Gorilla Museum.'},
     ]
   },
   {
-    id: 'uganda', name: 'Uganda', days: 'Days 6–7', color: '#DB4437',
-    stops: [
-      { name: 'Ruhija (Bwindi)', lat: -1.0438, lng: 29.7773, desc: 'Drive across the border to Bwindi Impenetrable Forest NP. Visit the Ruhija Vulnerable Children\'s School and go on a gorilla trek!' }
+    id:'uganda',name:'Uganda',days:'Jul 26–28',color:'#DB4437',
+    stops:[
+      {name:'Bwindi Impenetrable Forest',lat:-1.0438,lng:29.7773,dates:'Jul 26–28',desc:'Drive across the border on the 26th, first night at Ruhija Gorilla Lodge. Gorilla trek on the morning of the 27th (!!). Visit the local village that afternoon. Bird walk on the 28th before driving back to Kigali.'}
     ]
   },
   {
-    id: 'south-africa-jhb', name: 'South Africa', days: 'Days 8–9', color: '#0F9D58', label: 'Johannesburg',
-    stops: [
-      { name: 'Johannesburg', lat: -26.2041, lng: 28.0473, desc: 'Fly to Johannesburg to explore the Apartheid Museum — a powerful journey through South Africa\'s history.' }
+    id:'sa-jhb',name:'South Africa (Johannesburg)',days:'Jul 29–30',color:'#0F9D58',
+    stops:[
+      {name:'Johannesburg',lat:-26.2041,lng:28.0473,dates:'Jul 29–30',desc:'Fly from Kigali to Jo\'burg on the 29th. Apartheid Museum on the afternoon of the 30th, then on to Botswana.'}
     ]
   },
   {
-    id: 'botswana', name: 'Botswana', days: 'Days 10–17', color: '#AB47BC',
-    stops: [
-      { name: 'Maun', lat: -19.9833, lng: 23.4167, desc: 'Gateway to the Okavango Delta. Board bush planes here for the flight into the wilderness.' },
-      { name: 'Xaxaba Island', lat: -19.5448, lng: 22.9993, desc: 'Heart of the Okavango Delta — mokoro canoe rides, walking safaris, and incredible birdlife.' },
-      { name: 'Savuti', lat: -18.5657, lng: 24.0631, desc: 'The Savuti grasslands — famous for large elephant herds and dramatic predator-prey dynamics on the open marsh.' },
-      { name: 'Chobe National Park', lat: -18.4577, lng: 25.1498, desc: 'See hippos, crocodiles, elephants, waterbirds, lions, leopards, giraffes and buffalo — to name a few!' }
+    id:'botswana',name:'Botswana',days:'Jul 31 – Aug 7',color:'#AB47BC',
+    stops:[
+      {name:'Maun',lat:-19.9833,lng:23.4167,dates:'Jul 31',desc:'Fly from Johannesburg to Maun, then hop straight onto a bush plane into the Okavango Delta.'},
+      {name:'Xaxaba Camp',lat:-19.5448,lng:22.9993,dates:'Jul 31 – Aug 2',desc:'Three nights deep in the Okavango Delta. Mokoro canoe rides, walking safaris, amazing birdlife. About as remote and wild as it gets.'},
+      {name:'Savute',lat:-18.5657,lng:24.0631,dates:'Aug 3–5',desc:'Bush plane to the Savute marsh in Chobe. Three days out here, known for huge elephant herds and predator action on the open plains.'},
+      {name:'Chobe (Kasane)',lat:-18.4577,lng:25.1498,dates:'Aug 6–7',desc:'Bush plane to Kasane. Sunset river safari on the Chobe on the 6th, then a full-day game drive on the 7th. Hippos, crocs, elephants, lions... all of it. Two nights at Two Rivers Lodge.'}
     ]
   },
   {
-    id: 'zimbabwe', name: 'Zimbabwe', days: 'Days 18–19', color: '#F4B400',
-    stops: [
-      { name: 'Victoria Falls', lat: -17.9243, lng: 25.8572, desc: 'Visit the Victoria Falls Hotel, explore the Zambezi Gorge, and walk with elephants!' }
+    id:'zimbabwe',name:'Zimbabwe',days:'Aug 8–10',color:'#F4B400',
+    stops:[
+      {name:'Victoria Falls',lat:-17.9243,lng:25.8572,dates:'Aug 8–10',desc:'Drive across the border on the 8th. Lunch at the Victoria Falls Hotel, elephant experience that afternoon. Tour of the falls on the 9th, crafts market, and potentially brave enough to white water raft the Zambezi. Fly to Cape Town on the 10th.'}
     ]
   },
   {
-    id: 'south-africa-cape', name: 'South Africa', days: 'Days 20–26', color: '#0F9D58', label: 'Cape Town',
-    stops: [
-      { name: 'Cape Town', lat: -33.9249, lng: 18.4241, desc: 'See African penguins at Boulders Beach and visit the beautiful Kirstenbosch Botanical Garden.' },
-      { name: 'Franschhoek', lat: -33.8734, lng: 19.1170, desc: 'Enjoy world-class wine tasting in the vineyards of Franschhoek Valley — the food and wine capital of South Africa.' }
+    id:'sa-cape',name:'South Africa (Cape Town)',days:'Aug 10–16',color:'#34A853',
+    stops:[
+      {name:'Cape Town',lat:-33.9249,lng:18.4241,dates:'Aug 10–13',desc:'Arrive the evening of the 10th. Table Mountain, Cape of Good Hope, penguins at Boulders Beach, Kirstenbosch Gardens. Four nights to finally slow down a little.'},
+      {name:'Franschhoek',lat:-33.8734,lng:19.1170,dates:'Aug 14–16',desc:'Wine country to close out the trip. Two nights tasting our way through the valley, then to the airport on the 16th to fly home. Back to Massachusetts and moving to Tampa that same week!'}
     ]
   }
 ];
 
 // Map
-const map = L.map('map', { center: [-10, 26], zoom: 4, scrollWheelZoom: true });
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://openstreetmap.org">OSM</a> &copy; <a href="https://carto.com">CARTO</a>',
-  subdomains: 'abcd', maxZoom: 18
-}).addTo(map);
+const map=L.map('map',{center:[-8,26],zoom:4,zoomControl:true,scrollWheelZoom:true,tap:true});
+const tileVoyager=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+  attribution:'© <a href="https://openstreetmap.org">OSM</a> © <a href="https://carto.com">CARTO</a>',
+  subdomains:'abcd',maxZoom:18
+});
+const tileSat=L.layerGroup([
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18}),
+  L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18})
+]);
+tileVoyager.addTo(map);
+let isSat=false;
+const togBtn=document.getElementById('map-tog');
+togBtn.addEventListener('click',()=>{
+  if(isSat){map.removeLayer(tileSat);tileVoyager.addTo(map);togBtn.querySelector('span').textContent='Satellite';}
+  else{map.removeLayer(tileVoyager);tileSat.addTo(map);togBtn.querySelector('span').textContent='Map';}
+  isSat=!isSat;
+});
 
-// Route
-const allCoords = [];
-countries.forEach(c => c.stops.forEach(s => allCoords.push([s.lat, s.lng])));
-L.polyline(allCoords, { color: '#5c7a5e', weight: 2, opacity: 0.4, dashArray: '6,10', lineCap: 'round' }).addTo(map);
+// Route line
+const coords=[];
+C.forEach(c=>c.stops.forEach(s=>coords.push([s.lat,s.lng])));
+L.polyline(coords,{color:'#3a5240',weight:3.5,opacity:.55,dashArray:'6,10',lineCap:'round'}).addTo(map);
 
 // Markers
-let pinIndex = 1;
-const markerMap = {};
-
-countries.forEach(country => {
-  country.stops.forEach(stop => {
-    const num = pinIndex++;
-    const icon = L.divIcon({
-      className: '',
-      html: `<div class="marker-pin" style="background:${country.color}"><span>${num}</span></div>`,
-      iconSize: [28, 28], iconAnchor: [4, 28], popupAnchor: [12, -24]
-    });
-
-    const popup = `<div class="popup-inner">
-      <div class="popup-head" style="background:${country.color}">
-        <div class="popup-name">${stop.name}</div>
-        <div class="popup-country">${country.name} · ${country.days}</div>
-      </div>
-      <div class="popup-desc">${stop.desc}</div>
-    </div>`;
-
-    const marker = L.marker([stop.lat, stop.lng], { icon })
-      .addTo(map)
-      .bindPopup(popup, { maxWidth: 260, closeButton: true });
-
-    markerMap[`${country.id}-${stop.name}`] = { marker, country, stop, num };
+let pi=1;const M={};
+C.forEach(c=>{
+  c.stops.forEach(s=>{
+    const n=pi++;
+    const icon=L.divIcon({className:'',html:`<div class="mk" style="background:${c.color}"><span>${n}</span></div>`,iconSize:[26,26],iconAnchor:[4,26],popupAnchor:[10,-22]});
+    const pop=`<div class="pp"><div class="pp-hd" style="background:${c.color}"><div class="pp-nm">${s.name}</div><div class="pp-sub">${c.name}</div></div><div class="pp-dt">${s.dates}</div><div class="pp-ds">${s.desc}</div></div>`;
+    const mk=L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(pop,{maxWidth:240,closeButton:true});
+    M[`${c.id}-${s.name}`]={mk,c,s,n};
   });
 });
 
 // Tabs
-const bar = document.getElementById('country-bar');
-countries.forEach(c => {
-  const tab = document.createElement('button');
-  tab.className = 'country-tab';
-  tab.dataset.id = c.id;
-  tab.style.setProperty('--tab-color', c.color);
-  tab.innerHTML = `<div class="tab-dot" style="background:${c.color}"></div><div><div>${c.label || c.name}</div><div class="tab-days">${c.days}</div></div>`;
-  tab.addEventListener('click', () => openCountry(c.id));
-  bar.appendChild(tab);
+const bar=document.getElementById('tabs');
+C.forEach(c=>{
+  const t=document.createElement('button');
+  t.className='tab';t.dataset.id=c.id;t.style.setProperty('--c',c.color);
+  t.innerHTML=`<div class="dot" style="background:${c.color}"></div><div><div>${c.name}</div><div class="tab-sub">${c.days}</div></div>`;
+  t.addEventListener('click',()=>openC(c.id));
+  bar.appendChild(t);
 });
 
-function openCountry(id) {
-  const c = countries.find(x => x.id === id);
-  if (!c) return;
-  const bounds = L.latLngBounds(c.stops.map(s => [s.lat, s.lng]));
-  map.flyToBounds(bounds.pad(0.5), { duration: 1, maxZoom: 10 });
-  document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
-  document.querySelector(`.country-tab[data-id="${id}"]`).classList.add('active');
-  showDetail(c);
+function openC(id){
+  const c=C.find(x=>x.id===id);if(!c)return;
+  const b=L.latLngBounds(c.stops.map(s=>[s.lat,s.lng]));
+  map.flyToBounds(b.pad(0.5),{duration:.8,maxZoom:10});
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelector(`.tab[data-id="${id}"]`).classList.add('on');
+  showDP(c);
 }
 
 // Detail panel
-const panel = document.getElementById('detail-panel');
-function showDetail(c) {
-  document.getElementById('detail-header').style.background = c.color;
-  document.getElementById('detail-days').textContent = c.days;
-  document.getElementById('detail-country').textContent = c.label || c.name;
-
-  let startNum = 1;
-  for (const x of countries) { if (x.id === c.id) break; startNum += x.stops.length; }
-
-  let html = '';
-  c.stops.forEach((s, i) => {
-    html += `<div class="detail-stop" data-key="${c.id}-${s.name}">
-      <div class="detail-stop-name"><div class="pin-num" style="background:${c.color}">${startNum + i}</div>${s.name}</div>
-      <div class="detail-stop-desc">${s.desc}</div>
-    </div>`;
+const dp=document.getElementById('dp');
+function showDP(c){
+  document.getElementById('dp-hd').style.background=c.color;
+  document.getElementById('dp-days').textContent=c.days;
+  document.getElementById('dp-name').textContent=c.name;
+  let sn=1;for(const x of C){if(x.id===c.id)break;sn+=x.stops.length;}
+  let h='';
+  c.stops.forEach((s,i)=>{
+    h+=`<div class="dp-stop" data-k="${c.id}-${s.name}"><div class="dp-sn"><div class="pn" style="background:${c.color}">${sn+i}</div>${s.name}</div><div class="dp-date">${s.dates}</div><div class="dp-desc">${s.desc}</div></div>`;
   });
-  document.getElementById('detail-body').innerHTML = html;
-  panel.classList.add('open');
-
-  document.getElementById('detail-body').querySelectorAll('.detail-stop').forEach(el => {
-    el.addEventListener('click', () => {
-      const e = markerMap[el.dataset.key];
-      if (e) { map.flyTo([e.stop.lat, e.stop.lng], 12, { duration: 0.8 }); e.marker.openPopup(); }
+  document.getElementById('dp-body').innerHTML=h;
+  dp.classList.add('open');
+  document.getElementById('dp-body').querySelectorAll('.dp-stop').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const e=M[el.dataset.k];
+      if(e){map.flyTo([e.s.lat,e.s.lng],12,{duration:.6});e.mk.openPopup();}
     });
   });
 }
 
-document.getElementById('detail-close').addEventListener('click', () => {
-  panel.classList.remove('open');
-  document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
+document.getElementById('dp-x').addEventListener('click',()=>{
+  dp.classList.remove('open');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
 });
 
-map.on('popupopen', e => {
-  const ll = e.popup._latlng;
-  for (const k in markerMap) {
-    const { stop, country } = markerMap[k];
-    if (Math.abs(stop.lat - ll.lat) < 0.01 && Math.abs(stop.lng - ll.lng) < 0.01) {
-      document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
-      const tab = document.querySelector(`.country-tab[data-id="${country.id}"]`);
-      if (tab) tab.classList.add('active');
+map.on('click',()=>{
+  dp.classList.remove('open');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+});
+
+map.on('popupopen',e=>{
+  const ll=e.popup._latlng;
+  for(const k in M){
+    const{s,c}=M[k];
+    if(Math.abs(s.lat-ll.lat)<.01&&Math.abs(s.lng-ll.lng)<.01){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+      const t=document.querySelector(`.tab[data-id="${c.id}"]`);
+      if(t)t.classList.add('on');
       break;
     }
   }
 });
 
 // Legend
-const legend = document.getElementById('map-legend');
-let lh = '<div class="legend-title">Countries</div>';
-countries.forEach(c => {
-  const lbl = c.label ? `${c.name} — ${c.label}` : c.name;
-  lh += `<div class="legend-item" onclick="openCountry('${c.id}')"><div class="legend-dot" style="background:${c.color}"></div>${lbl}</div>`;
-});
-legend.innerHTML = lh;
-
-function copyEmbed() {
-  document.getElementById('embed-code').select();
-  document.execCommand('copy');
-  const btn = document.getElementById('copy-btn');
-  btn.textContent = 'COPIED!'; btn.classList.add('copied');
-  setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
-}
+const leg=document.getElementById('leg');
+let lh='<div class="leg-t">Countries</div>';
+C.forEach(c=>{lh+=`<div class="leg-i" onclick="openC('${c.id}')"><div class="leg-d" style="background:${c.color}"></div>${c.name}</div>`;});
+leg.innerHTML=lh;
 </script>
 </body>
 </html>
