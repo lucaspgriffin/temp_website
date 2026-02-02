@@ -209,13 +209,23 @@ C.forEach(c=>{
   bar.appendChild(t);
 });
 
+function isMobile(){return window.innerWidth<=640;}
+
 function openC(id){
   const c=C.find(x=>x.id===id);if(!c)return;
   const b=L.latLngBounds(c.stops.map(s=>[s.lat,s.lng]));
   map.flyToBounds(b.pad(0.5),{duration:.8,maxZoom:10});
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelector(`.tab[data-id="${id}"]`).classList.add('on');
-  showDP(c);
+  if(isMobile()){
+    dp.classList.remove('open');
+    setTimeout(()=>{
+      const first=M[`${c.id}-${c.stops[0].name}`];
+      if(first)first.mk.openPopup();
+    },900);
+  } else {
+    showDP(c);
+  }
 }
 
 // Detail panel
